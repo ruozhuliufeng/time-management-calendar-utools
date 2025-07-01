@@ -1,0 +1,21 @@
+{
+  "main": "index.html",
+  "preload": "preload/services.js",
+  "logo": "logo.png",
+  "development": {
+    "main": "http://localhost:5173"
+  },
+  "features": [
+    {
+      "code": "calendar",
+      "explain": "时间管理行事历 - 以周为维度管理工作计划",
+      "cmds": [
+        "行事历",
+        "时间管理",
+        "工作计划",
+        "周计划",
+        "calendar"
+      ]
+    }
+  ]
+}
