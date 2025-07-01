@@ -395,12 +395,33 @@ onMounted(() => {
   background: var(--glass-bg);
   backdrop-filter: var(--backdrop-blur);
   border-right: 1px solid var(--glass-border);
-  padding: 32px 24px;
+  padding: 16px 12px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 16px;
   position: relative;
+  transition: all var(--transition-normal);
+}
+
+@media (max-width: 1400px) {
+  .sidebar {
+    width: 280px;
+    padding: 12px 8px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .sidebar {
+    width: 100%;
+    height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 }
 
 .sidebar::before {
@@ -415,8 +436,8 @@ onMounted(() => {
 }
 
 .section-title {
-  margin: 0 0 16px 0;
-  font-size: 18px;
+  margin: 0 0 12px 0;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-primary);
   background: var(--primary-gradient);
@@ -424,7 +445,22 @@ onMounted(() => {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   position: relative;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
+}
+
+@media (max-width: 1400px) {
+  .section-title {
+    font-size: 14px;
+    margin: 0 0 8px 0;
+    padding-bottom: 4px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .section-title {
+    font-size: 12px;
+    margin: 0 0 6px 0;
+  }
 }
 
 .section-title::after {
@@ -441,6 +477,13 @@ onMounted(() => {
 /* 视图选择器样式 */
 .view-selector {
   flex-shrink: 0;
+}
+
+@media (max-width: 1200px) {
+  .view-selector {
+    min-width: 200px;
+    margin-right: 16px;
+  }
 }
 
 .view-buttons {
@@ -499,14 +542,33 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
+@media (max-width: 1200px) {
+  .calendar-section {
+    min-width: 280px;
+    margin-right: 16px;
+  }
+}
+
 .mini-calendar {
   background: var(--surface);
   backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 12px;
   box-shadow: var(--shadow-lg);
   position: relative;
+}
+
+@media (max-width: 1400px) {
+  .mini-calendar {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .mini-calendar {
+    padding: 6px;
+  }
 }
 
 .mini-calendar::before {
@@ -665,6 +727,13 @@ onMounted(() => {
   min-height: 0;
 }
 
+@media (max-width: 1200px) {
+  .todos-section {
+    min-width: 300px;
+    flex: none;
+  }
+}
+
 .add-todo {
   display: flex;
   gap: 8px;
@@ -673,14 +742,28 @@ onMounted(() => {
 
 .todo-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 12px;
   background: var(--surface);
   backdrop-filter: var(--backdrop-blur);
   color: var(--text-primary);
   transition: all var(--transition-fast);
+}
+
+@media (max-width: 1400px) {
+  .todo-input {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .todo-input {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
 }
 
 .todo-input:focus {
@@ -732,8 +815,8 @@ onMounted(() => {
 .todo-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
+  gap: 8px;
+  padding: 8px 12px;
   background: var(--surface);
   backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--glass-border);
@@ -742,6 +825,20 @@ onMounted(() => {
   transition: all var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+}
+
+@media (max-width: 1400px) {
+  .todo-item {
+    gap: 6px;
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .todo-item {
+    gap: 4px;
+    padding: 4px 6px;
+  }
 }
 
 .todo-item::before {

@@ -18,11 +18,21 @@
       <div v-if="currentView === 'week'" class="week-view">
         <!-- 标题栏 -->
         <div class="header">
-          <h1 class="title">周度工作计划</h1>
-          <div class="week-navigation">
-            <button @click="previousWeek" class="nav-btn">‹ 上周</button>
-            <span class="current-week">{{ currentWeekText }}</span>
-            <button @click="nextWeek" class="nav-btn">下周 ›</button>
+          <div class="header-left">
+            <h1 class="title">周度工作计划</h1>
+            <div class="week-navigation">
+              <button @click="previousWeek" class="nav-btn">‹ 上周</button>
+              <span class="current-week">{{ currentWeekText }}</span>
+              <button @click="nextWeek" class="nav-btn">下周 ›</button>
+            </div>
+          </div>
+          <div class="header-right">
+            <!-- 操作按钮移到右上角 -->
+            <div class="actions">
+              <button @click="saveData(true)" class="save-btn">保存数据</button>
+              <button @click="exportData" class="export-btn">导出数据</button>
+              <button @click="clearData" class="clear-btn">清空本周</button>
+            </div>
           </div>
         </div>
 
@@ -191,12 +201,7 @@
       </table>
     </div>
 
-        <!-- 操作按钮 -->
-        <div class="actions">
-          <button @click="saveData(true)" class="save-btn">保存数据</button>
-          <button @click="exportData" class="export-btn">导出数据</button>
-          <button @click="clearData" class="clear-btn">清空本周</button>
-        </div>
+
       </div>
       
       <!-- 月度视图 -->
@@ -251,7 +256,7 @@ const currentWeekText = computed(() => {
 })
 
 /**
- * 计算属性：当前周的天数数组
+ * 计算属性：当前周的天数数组（以当前日期为起始排列）
  */
 const weekDays = computed(() => {
   const days = []
@@ -261,15 +266,38 @@ const weekDays = computed(() => {
     weekData.value[weekKey] = initializeWeekData()
   }
   
+  const today = new Date()
+  const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  
+  // 找到今日在本周中的位置
+  let todayIndex = -1
   for (let i = 0; i < 7; i++) {
     const date = new Date(currentWeekStart.value)
     date.setDate(date.getDate() + i)
+    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    
+    if (dateOnly.getTime() === todayDateOnly.getTime()) {
+      todayIndex = i
+      break
+    }
+  }
+  
+  // 以今日为起始重新排列日期
+  for (let i = 0; i < 7; i++) {
+    const dayOffset = todayIndex >= 0 ? (todayIndex + i) % 7 : i
+    const date = new Date(currentWeekStart.value)
+    date.setDate(date.getDate() + dayOffset)
+    const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    
+    // 判断是否为今日
+    const isToday = dateOnly.getTime() === todayDateOnly.getTime()
     
     days.push({
       date: date.getDate(),
       dayName: getDayName(date.getDay()),
       fullDate: date,
-      ...weekData.value[weekKey].days[i]
+      isToday: isToday,
+      ...weekData.value[weekKey].days[dayOffset]
     })
   }
   
@@ -914,11 +942,25 @@ watch(weekData, () => {
   background-attachment: fixed;
 }
 
+/* 响应式布局 */
+@media (max-width: 1400px) {
+  .calendar-container {
+    flex-direction: column;
+  }
+}
+
 .main-content {
   flex: 1;
-  padding: 32px;
+  padding: 16px;
   max-width: calc(100% - 320px);
   backdrop-filter: var(--backdrop-blur);
+}
+
+@media (max-width: 1400px) {
+  .main-content {
+    max-width: 100%;
+    padding: 12px;
+  }
 }
 
 .week-view {
@@ -943,8 +985,8 @@ watch(weekData, () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
-  padding: 24px 32px;
+  margin-bottom: 8px;
+  padding: 8px 12px;
   background: var(--surface);
   backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--glass-border);
@@ -952,6 +994,15 @@ watch(weekData, () => {
   box-shadow: var(--shadow-lg);
   position: relative;
   overflow: hidden;
+}
+
+@media (max-width: 1200px) {
+  .header {
+    padding: 6px 8px;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
 }
 
 .header::before {
@@ -1019,8 +1070,23 @@ watch(weekData, () => {
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-xl);
-  margin-bottom: 32px;
+  margin-bottom: 8px;
   position: relative;
+  font-size: 11px;
+}
+
+@media (max-width: 1400px) {
+  .calendar-table {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .calendar-table {
+    font-size: 9px;
+    margin-bottom: 4px;
+  }
 }
 
 .calendar-table::before {
@@ -1040,9 +1106,21 @@ table {
 
 th, td {
   border: 1px solid var(--border);
-  padding: 16px;
+  padding: 4px 3px;
   vertical-align: top;
   transition: all var(--transition-fast);
+}
+
+@media (max-width: 1400px) {
+  th, td {
+    padding: 3px 2px;
+  }
+}
+
+@media (max-width: 1200px) {
+  th, td {
+    padding: 2px 1px;
+  }
 }
 
 th {
@@ -1142,7 +1220,7 @@ th {
 
 /* 计划单元格样式 */
 .plan-cell, .other-work-cell {
-  padding: 12px;
+  padding: 6px;
   background: var(--surface);
   transition: all var(--transition-normal);
 }
@@ -1155,15 +1233,15 @@ th {
 .completion-grid, .other-work-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .completion-row, .other-work-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 36px;
-  padding: 8px;
+  gap: 4px;
+  min-height: 24px;
+  padding: 4px;
   background: var(--glass-bg);
   border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
@@ -1204,17 +1282,25 @@ th {
 .task-controls {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 140px;
-  padding: 8px;
+  gap: 2px;
+  min-width: 80px;
+  padding: 3px;
   background: var(--glass-bg);
   border-radius: var(--radius-sm);
   backdrop-filter: var(--backdrop-blur);
 }
 
+@media (max-width: 1200px) {
+  .task-controls {
+    gap: 1px;
+    min-width: 60px;
+    padding: 2px;
+  }
+}
+
 .priority-select {
-  font-size: 11px;
-  padding: 6px 10px;
+  font-size: 9px;
+  padding: 4px 6px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface);
@@ -1222,6 +1308,13 @@ th {
   cursor: pointer;
   transition: all var(--transition-fast);
   font-weight: 500;
+}
+
+@media (max-width: 1200px) {
+  .priority-select {
+    font-size: 8px;
+    padding: 3px 4px;
+  }
 }
 
 .priority-select:focus {
@@ -1239,13 +1332,20 @@ th {
   flex: 1;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-size: 13px;
+  padding: 3px 4px;
+  font-size: 10px;
   min-width: 0;
   background: var(--surface);
   backdrop-filter: var(--backdrop-blur);
   transition: all var(--transition-fast);
   font-family: inherit;
+}
+
+@media (max-width: 1200px) {
+  .task-input {
+    padding: 2px 3px;
+    font-size: 9px;
+  }
 }
 
 .task-input:focus {
@@ -1279,8 +1379,15 @@ th {
 .task-meta {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  min-width: 80px;
+  gap: 2px;
+  min-width: 60px;
+}
+
+@media (max-width: 1200px) {
+  .task-meta {
+    gap: 1px;
+    min-width: 50px;
+  }
 }
 
 /* 完成状态样式 */
@@ -1292,8 +1399,15 @@ th {
   display: flex;
   align-items: center;
   gap: 2px;
-  font-size: 11px;
+  font-size: 9px;
   cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+  .checkbox-label {
+    font-size: 8px;
+    gap: 1px;
+  }
 }
 
 .completion-checkbox {
@@ -1380,8 +1494,20 @@ th {
   vertical-align: top;
   background: var(--glass-bg);
   backdrop-filter: var(--backdrop-blur);
-  height: 1260px; /* 7行 × 180px = 1260px，确保完美对齐 */
+  height: 630px; /* 7行 × 90px = 630px，确保完美对齐 */
   padding: 0; /* 移除内边距，让textarea完全填充 */
+}
+
+@media (max-width: 1400px) {
+  .summary-cell {
+    height: 525px; /* 7行 × 75px = 525px */
+  }
+}
+
+@media (max-width: 1200px) {
+  .summary-cell {
+    height: 420px; /* 7行 × 60px = 420px */
+  }
 }
 
 /* 明日计划单元格样式 */
@@ -1392,27 +1518,75 @@ th {
 
 /* 移除了AI按钮相关样式，简化布局 */
 
+/* 标题栏布局样式 */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 1200px) {
+  .header {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .header-left {
+    gap: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 /* 操作按钮样式 */
 .actions {
   display: flex;
-  gap: 16px;
-  justify-content: center;
-  padding: 32px;
-  backdrop-filter: var(--backdrop-blur);
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 1200px) {
+  .actions {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
 }
 
 .save-btn, .export-btn, .clear-btn {
-  padding: 14px 28px;
+  padding: 10px 20px;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   transition: all var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   backdrop-filter: var(--backdrop-blur);
   box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 1200px) {
+  .save-btn, .export-btn, .clear-btn {
+    padding: 8px 16px;
+    font-size: 11px;
+  }
 }
 
 .save-btn {
@@ -1447,7 +1621,19 @@ th {
 
 /* 行样式 */
 .day-row {
-  height: 180px; /* 设置固定行高，确保7行总高度与周度总结单元格匹配 */
+  height: 90px; /* 缩小行高以适应页面 */
+}
+
+@media (max-width: 1400px) {
+  .day-row {
+    height: 75px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .day-row {
+    height: 60px;
+  }
 }
 
 .day-row:nth-child(even) {
@@ -1458,10 +1644,65 @@ th {
   background: #f0f8ff;
 }
 
+/* 当前日期行的特殊样式 */
+.today-row {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(126, 34, 206, 0.05) 100%);
+  border-left: 4px solid #8b5cf6;
+  position: relative;
+}
+
+.today-row::before {
+  content: '今日';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.today-row:hover {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(126, 34, 206, 0.08) 100%);
+}
+
+/* 当前日期的日期单元格样式 */
+.today-row .date-cell {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(126, 34, 206, 0.2) 100%);
+  color: #8b5cf6;
+  font-weight: normal;
+}
+
+.today-row .date-cell .date-number {
+    font-size: inherit;
+    color: #8b5cf6;
+    font-weight: normal;
+  }
+
+.today-row .date-cell .day-name {
+  color: #8b5cf6;
+  font-weight: normal;
+}
+
 /* 确保所有单元格垂直对齐 */
 .day-row td {
   vertical-align: top;
-  height: 180px;
+  height: 120px;
+}
+
+@media (max-width: 1400px) {
+  .day-row td {
+    height: 100px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .day-row td {
+    height: 80px;
+  }
 }
 
 /* 响应式设计 */

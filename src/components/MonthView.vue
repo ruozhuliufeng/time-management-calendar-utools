@@ -452,9 +452,22 @@ onMounted(() => {
 
 <style scoped>
 .month-view-container {
-  padding: 20px;
+  padding: 16px;
   background: #f5f5f5;
   min-height: 100vh;
+}
+
+@media (max-width: 1400px) {
+  .month-view-container {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .month-view-container {
+    padding: 8px;
+    min-height: calc(100vh - 200px);
+  }
 }
 
 /* 标题栏样式 */
@@ -462,14 +475,42 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 0 10px;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+@media (max-width: 1400px) {
+  .header {
+    margin-bottom: 12px;
+    padding: 0 6px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .header {
+    margin-bottom: 8px;
+    padding: 0 4px;
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 
 .title {
   margin: 0;
   color: #2c3e50;
-  font-size: 24px;
+  font-size: 20px;
+}
+
+@media (max-width: 1400px) {
+  .title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .title {
+    font-size: 16px;
+  }
 }
 
 .month-navigation {
@@ -506,8 +547,20 @@ onMounted(() => {
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   overflow-x: auto;
+}
+
+@media (max-width: 1400px) {
+  .month-table {
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .month-table {
+    margin-bottom: 8px;
+  }
 }
 
 table {
@@ -518,8 +571,23 @@ table {
 
 th, td {
   border: 1px solid #e0e0e0;
-  padding: 12px;
+  padding: 8px;
   vertical-align: top;
+  font-size: 12px;
+}
+
+@media (max-width: 1400px) {
+  th, td {
+    padding: 6px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1200px) {
+  th, td {
+    padding: 4px;
+    font-size: 10px;
+  }
 }
 
 th {
@@ -587,13 +655,31 @@ th {
 
 .goals-textarea {
   width: 100%;
-  height: 80px;
+  height: 60px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  padding: 8px;
-  font-size: 12px;
+  padding: 6px;
+  font-size: 11px;
   resize: vertical;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 1400px) {
+  .goals-textarea {
+    height: 50px;
+    padding: 4px;
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .goals-textarea {
+    height: 40px;
+    padding: 3px;
+    font-size: 9px;
+    margin-bottom: 6px;
+  }
 }
 
 .metrics-list {
@@ -705,12 +791,28 @@ th {
 
 .progress-notes {
   width: 100%;
-  height: 60px;
+  height: 50px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  padding: 6px;
-  font-size: 11px;
+  padding: 4px;
+  font-size: 10px;
   resize: vertical;
+}
+
+@media (max-width: 1400px) {
+  .progress-notes {
+    height: 40px;
+    padding: 3px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .progress-notes {
+    height: 30px;
+    padding: 2px;
+    font-size: 8px;
+  }
 }
 
 /* 总结单元格样式 */
@@ -726,31 +828,78 @@ th {
 
 .summary-textarea {
   width: 100%;
-  height: 60px;
+  height: 50px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  padding: 6px;
-  font-size: 11px;
+  padding: 4px;
+  font-size: 10px;
   resize: vertical;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 1400px) {
+  .summary-textarea {
+    height: 40px;
+    padding: 3px;
+    font-size: 9px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .summary-textarea {
+    height: 30px;
+    padding: 2px;
+    font-size: 8px;
+    margin-bottom: 4px;
+  }
 }
 
 /* 操作按钮样式 */
 .actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1400px) {
+  .actions {
+    gap: 6px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .actions {
+    gap: 4px;
+    padding: 8px;
+  }
 }
 
 .save-btn, .export-btn, .clear-btn {
-  padding: 10px 20px;
+  padding: 8px 16px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   transition: all 0.2s;
+}
+
+@media (max-width: 1400px) {
+  .save-btn, .export-btn, .clear-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .save-btn, .export-btn, .clear-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
 }
 
 .save-btn {
